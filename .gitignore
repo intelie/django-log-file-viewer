@@ -1,2 +1,4 @@
 django-log-file-viewer/*.pyc
 *.pyc
+build
+django_log_file_viewer.egg-info/

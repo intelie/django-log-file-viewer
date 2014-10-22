@@ -43,7 +43,7 @@ def logfile_view(request, logfile_id, template_name='logfile.html'):
         filename = files_list[int(logfile_id)]
     except Exception:
         return HttpResponseBadRequest()
-    logfile = os.path.join(LOG_FILES_DIR, files_list[int(logfile_id)])
+    logfile = files_list[int(logfile_id)]
     log_file_object = manager.get_file(logfile)
     fake_log_file_lines = manager.get_file_lines_count(log_file_object)
     paginator = Paginator(fake_log_file_lines, LOG_FILES_PAGINATE_LINES)
@@ -71,7 +71,7 @@ def logfile_to_csv(request, logfile_id):
         filename = files_list[int(logfile_id)]
     except Exception:
         return HttpResponseBadRequest()
-    logfile = os.path.join(LOG_FILES_DIR, files_list[int(logfile_id)])
+    logfile = files_list[int(logfile_id)]
     file_dict = manager.parse_log_file(logfile, 0, full=True)
     # Constructing CSV file
     header_list = manager.compile_header_from_regexp()
@@ -88,5 +88,3 @@ def logfile_to_csv(request, logfile_id):
                     row_list += [unicode(cell).encode('utf8'),]
                 writer.writerow(row_list)
     return response
-
-
