@@ -13,10 +13,15 @@
         {% endif %}
         {% for line in paginator.object_list  %}
         <tr>
-            {% for item in line %}
+          {% for item in line %}
+
+          {% if header_list|length == 1 %}
+          <td>{{ item }}</td>
+          {% else %}
                 {% for atom in item %}
                     <td>{{ atom }}</td>
-                {% endfor %}
+                    {% endfor %}
+                    {% endif %}
             {% endfor %}
         </tr>
         {% endfor %}

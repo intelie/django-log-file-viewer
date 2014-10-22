@@ -4,7 +4,7 @@
 from setuptools import setup
 
 setup(name='django-log-file-viewer',
-    version='0.5',
+    version='0.10',
     description='Django admin expansion to read/parse file based Django Logging output.',
     author='Intelie',
     packages=['django-log-file-viewer'],

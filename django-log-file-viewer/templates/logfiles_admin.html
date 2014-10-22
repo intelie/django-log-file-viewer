@@ -97,6 +97,8 @@
                     {% if action_form and actions_on_top and cl.full_result_count %}{% admin_actions %}{% endif %}
 
                     {% if files_list %}
+                    <a href="{% url 'log-files-to-zip' %}">Download as zip</a>
+
                     <div class="results">
                         <table id="result_list" cellspacing="0">
                             <thead>
@@ -104,6 +106,7 @@
                                 <th scope="col">
                                     <a href="#{# TODO: Sort order #}"> Log file names </a>
                                 </th>
+                                <th scope="col"> Download Zip</th>
                                 <th scope="col"> Download as CSV</th>
                             </tr>
                             </thead>
@@ -112,6 +115,9 @@
                             <tr class="row1">
                                 <td>
                                     <a href="{% url "log-file-admin" index %}">{{ file }}</a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'log-file-to-zip-admin' index %}" >Download Zip</a>
                                 </td>
                                 <td>
                                     <a href="{% url 'log-file-to-csv-admin' index %}" >Download CSV</a>

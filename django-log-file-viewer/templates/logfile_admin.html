@@ -49,6 +49,10 @@
                 {{ file_name }}
             </a>
             &rsaquo;
+            <a href="{% url 'log-file-to-zip-admin' file_id %}">
+                {{ file_name }} Download as Zip
+            </a>
+            &rsaquo;
             <a href="{% url 'log-file-to-csv-admin' file_id %}">
                 {{ file_name }} Download as CSV
             </a>
@@ -122,10 +126,14 @@
                             <tbody>
                             {% for line in paginator.object_list  %}
                             <tr class="row1">
-                                {% for item in line %}
-                                    {% for atom in item %}
-                                        <td>{{ atom }}</td>
-                                    {% endfor %}
+                              {% for item in line %}
+                              {% if header_list|length == 1 %}
+                              <td>{{ item }}</td>
+                              {% else %}
+                              {% for atom in item %}
+                              <td>{{ atom }}</td>
+                              {% endfor %}
+                              {% endif %}
                                 {% endfor %}
                             </tr>
                             {% endfor %}

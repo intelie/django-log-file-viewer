@@ -1,13 +1,15 @@
-import os, csv
+import os, csv, tempfile, zipfile
 from django.http import HttpResponse
 from django.core.paginator import Paginator
+from django.core.servers.basehttp import FileWrapper
 from django.shortcuts import render_to_response
 from django.http import HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required, user_passes_test
 from settings import *
 from models import LogFilesManager
 
-__all__ = ['logfiles_list', 'logfile_view', 'logfile_to_csv']
+
+__all__ = ['logfiles_list', 'logfile_view', 'logfile_to_csv', 'logfile_to_zip', 'logfiles_to_zip']
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -61,6 +63,36 @@ def logfile_view(request, logfile_id, template_name='logfile.html'):
     }
     return render_to_response(template_name, context)
 
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def logfiles_to_zip(request):
+    manager = LogFilesManager()
+    files_list = manager.list_logfiles(LOG_FILES_DIR)
+    files = map(lambda x: (x, x.replace('/','_')), files_list)
+    return archive_files('logs', files)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def logfile_to_zip(request, logfile_id):
+    logfile = getfile(logfile_id)
+    filename = logfile.replace('/','_')
+    return archive_files(filename, [(logfile, filename)])
+
+def archive_files(name, files):
+    temp = tempfile.TemporaryFile()
+    archive = zipfile.ZipFile(temp, 'w', zipfile.ZIP_DEFLATED)
+    for filepath, filename in files:
+        archive.write(filepath, filename)
+    archive.close()
+    wrapper = FileWrapper(temp)
+    response = HttpResponse(wrapper, content_type='application/zip')
+    response['Content-Disposition'] = 'attachment; filename=%s.zip' % name
+    response['Content-Length'] = temp.tell()
+    temp.seek(0)
+    return response
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def logfile_to_csv(request, logfile_id):
@@ -88,3 +120,13 @@ def logfile_to_csv(request, logfile_id):
                     row_list += [unicode(cell).encode('utf8'),]
                 writer.writerow(row_list)
     return response
+
+
+
+def getfile(logfile_id):
+    manager = LogFilesManager()
+    files_list = manager.list_logfiles(LOG_FILES_DIR)
+    try:
+        return files_list[int(logfile_id)]
+    except Exception:
+        return HttpResponseBadRequest()
