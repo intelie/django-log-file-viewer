@@ -7,8 +7,8 @@ setup(name='django-log-file-viewer',
     version='0.10',
     description='Django admin expansion to read/parse file based Django Logging output.',
     author='Intelie',
-    packages=['django-log-file-viewer'],
-    package_data={'django-log-file-viewer': [
+    packages=['django_log_file_viewer'],
+    package_data={'django_log_file_viewer': [
         'templates/*.html',
         'testdata/log/test/.gitignore', # To keep this directory (required for farther tests)
         'testdata/log/testlog.log',
